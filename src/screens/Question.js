@@ -15,28 +15,20 @@ function Question() {
         options: []
     })
 
-    // const submitQuestion = async () => {
-    //     try {
-    //         let res = await axios.post(`${backendUrl}/quiz/start`);
-
-    //         let quizId = res.data.quizId || ""
-    //         let questionId = res.data.question.questionId || ""
-
-    //history.push(`/question/${quizId}/${questionId}`)
-    //     }
-    //     catch {
-    //         // history.push("/error")
-    //     }
-    // }
+    const submitQuestion = async () => {
+        try {
+            let res = await axios.post(`${backendUrl}/quiz/start`);
+        }
+        catch {
+            history.push("/error")
+        }
+    }
 
     const getNextQuestion = async () => {
         try {
             let res = await axios.get(`${backendUrl}/quiz/${quizId}/nextQuestion`);
-
             let questionId = res.data.question.questionId || ""
-
             history.replace(`/question/${quizId}/${questionId}`)
-
         }
         catch {
             history.push("/error")
@@ -45,7 +37,6 @@ function Question() {
 
     const handleNextClick = async () => {
         //await submitQuestion();
-        console.log("handleNextClick")
         await getNextQuestion();
     }
 
@@ -59,10 +50,6 @@ function Question() {
 
     }
 
-    useEffect(() => {
-        fetchCurrentQuestionDetails();
-    }, [questionId])
-
     const handleAnswerSelection = e => {
         let currentOption = e.target.value
         if (selectedAnswers.includes(currentOption)) {
@@ -72,12 +59,15 @@ function Question() {
         }
     }
 
+    useEffect(() => {
+        fetchCurrentQuestionDetails();
+    }, [questionId])
+
     return (
-        <div className='w-full' key={questionId}>
+        <div key={questionId}>
             <h2>{question?.description}</h2>
             <MultiSelectRadioOptions options={question?.options} onChange={handleAnswerSelection} />
-            <Button buttonText={"Next"} disabled={selectedAnswers.length === 0} onClick={_ => handleNextClick()} />
-
+            <Button buttonText={"Next"} disabled={selectedAnswers.length === 0} onClick={handleNextClick} />
         </div>
     );
 }

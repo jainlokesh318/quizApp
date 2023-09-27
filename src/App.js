@@ -5,8 +5,8 @@ import PageNotFound from './screens/PageNotFound';
 
 function App() {
   return (
-    <div className="h-screen w-screen flex">
-      <div className="m-auto border h-full flex w-full md:w-1/3 flex flex-col items-center justify-center">
+    <div className="h-screen w-screen flex justify-center">
+      <div className="border p-5 h-full w-full md:w-[30rem]">
         <Router>
           <Switch>
             <Route exact path="/" component={Home} />
