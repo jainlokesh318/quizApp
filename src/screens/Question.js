@@ -6,6 +6,7 @@ import axios from 'axios';
 
 
 function Question() {
+    const [selectedAnswers, setSelectedAnswers] = useState([]); // State to track selected options
     const history = useHistory();
     const { quizId, questionId } = useParams()
     const [question, setQuestion] = useState({
@@ -61,21 +62,18 @@ function Question() {
         fetchCurrentQuestionDetails();
     }, [questionId])
 
-    const [selectedOptions, setSelectedOptions] = useState([]); // State to track selected options
-
-    console.log("re-render", selectedOptions)
     return (
         <div className='w-full' key={questionId}>
             <h2>{question.description}</h2>
-            <ul multiple={true} onChange={e => console.log(e.target.selectedOptions)}>
+            <ul multiple={true} onChange={e => console.log(e.target.selectedAnswers)}>
                 {
                     question?.options.map(option =>
-                        <li key={option} className={`flex item-center m-2 p-2 gap-2 border ${selectedOptions.includes(option) ? "border-green-500" : "border-gray-200"} border-2 rounded`}>
-                            <input className='text-green-500' type='checkbox' key={option} checked={selectedOptions.includes(option)} value={option} onChange={e => {
-                                if (selectedOptions.includes(option)) {
-                                    setSelectedOptions(prev => prev.filter(item => item !== option))
+                        <li key={option} className={`flex item-center m-2 p-2 gap-2 border ${selectedAnswers.includes(option) ? "border-green-500" : "border-gray-200"} border-2 rounded`}>
+                            <input className='text-green-500' type='checkbox' key={option} checked={selectedAnswers.includes(option)} value={option} onChange={e => {
+                                if (selectedAnswers.includes(option)) {
+                                    setSelectedAnswers(prev => prev.filter(item => item !== option))
                                 } else {
-                                    setSelectedOptions(prev => [...prev, e.target.value])
+                                    setSelectedAnswers(prev => [...prev, e.target.value])
                                 }
                             }} />
                             <label>{option}</label>
@@ -84,8 +82,8 @@ function Question() {
                 }
 
             </ul>
-            {/* <p>Selected Options: {selectedOptions.join(', ')}</p> */}
-            <Button buttonText={"Next"} onClick={_ => handleNextClick()} />
+            {/* <p>Selected Options: {selectedAnswers.join(', ')}</p> */}
+            <Button buttonText={"Next"} disabled={selectedAnswers.length === 0} onClick={_ => handleNextClick()} />
 
         </div>
     );
