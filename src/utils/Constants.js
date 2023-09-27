@@ -1,0 +1,1 @@
+export const backendUrl = "https://untruegrouchyenterprise.lokeshjain318.repl.co/api"
