@@ -3,6 +3,7 @@ import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom.min
 import Button from '../components/Button';
 import { backendUrl } from '../utils/Constants';
 import axios from 'axios';
+import MultiSelectRadioOptions from '../components/MultiSelectRadioOptions';
 
 
 function Question() {
@@ -21,7 +22,7 @@ function Question() {
     //         let quizId = res.data.quizId || ""
     //         let questionId = res.data.question.questionId || ""
 
-            //history.push(`/question/${quizId}/${questionId}`)
+    //history.push(`/question/${quizId}/${questionId}`)
     //     }
     //     catch {
     //         // history.push("/error")
@@ -31,15 +32,15 @@ function Question() {
     const getNextQuestion = async () => {
         try {
             let res = await axios.get(`${backendUrl}/quiz/${quizId}/nextQuestion`);
-        
+
             let questionId = res.data.question.questionId || ""
 
             history.replace(`/question/${quizId}/${questionId}`)
-            
-         }
-         catch {
-             history.push("/error")
-         }
+
+        }
+        catch {
+            history.push("/error")
+        }
     }
 
     const handleNextClick = async () => {
@@ -62,27 +63,19 @@ function Question() {
         fetchCurrentQuestionDetails();
     }, [questionId])
 
+    const handleAnswerSelection = e => {
+        let currentOption = e.target.value
+        if (selectedAnswers.includes(currentOption)) {
+            setSelectedAnswers(prev => prev.filter(item => item !== currentOption))
+        } else {
+            setSelectedAnswers(prev => [...prev, currentOption])
+        }
+    }
+
     return (
         <div className='w-full' key={questionId}>
-            <h2>{question.description}</h2>
-            <ul multiple={true} onChange={e => console.log(e.target.selectedAnswers)}>
-                {
-                    question?.options.map(option =>
-                        <li key={option} className={`flex item-center m-2 p-2 gap-2 border ${selectedAnswers.includes(option) ? "border-green-500" : "border-gray-200"} border-2 rounded`}>
-                            <input className='text-green-500' type='checkbox' key={option} checked={selectedAnswers.includes(option)} value={option} onChange={e => {
-                                if (selectedAnswers.includes(option)) {
-                                    setSelectedAnswers(prev => prev.filter(item => item !== option))
-                                } else {
-                                    setSelectedAnswers(prev => [...prev, e.target.value])
-                                }
-                            }} />
-                            <label>{option}</label>
-                        </li>
-                    )
-                }
-
-            </ul>
-            {/* <p>Selected Options: {selectedAnswers.join(', ')}</p> */}
+            <h2>{question?.description}</h2>
+            <MultiSelectRadioOptions options={question?.options} onChange={handleAnswerSelection} />
             <Button buttonText={"Next"} disabled={selectedAnswers.length === 0} onClick={_ => handleNextClick()} />
 
         </div>
