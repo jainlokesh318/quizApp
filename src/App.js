@@ -6,7 +6,7 @@ import PageNotFound from './screens/PageNotFound';
 function App() {
   return (
     <div className="h-screen w-screen flex justify-center">
-      <div className="border p-5 h-full w-full md:w-[30rem]">
+      <div className="border h-full w-full md:w-[30rem]">
         <Router>
           <Switch>
             <Route exact path="/" component={Home} />

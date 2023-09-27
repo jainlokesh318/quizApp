@@ -22,7 +22,7 @@ function Home() {
     }
 
     return (
-        <div className='flex flex-col justify-between items-center h-full w-full' >
+        <div className='flex flex-col justify-between items-center h-full w-full p-5' >
             <img src={upraised} className='h-10' />
             <div className='rounded-full border flex items-center justify-center h-[30vh] w-[30vh] aspect-square text-4xl font-bold  text-red-500 shadow-xl'>
                 <span>Quiz</span>
