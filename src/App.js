@@ -2,6 +2,7 @@ import Home from './screens/Home';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Question from './screens/Question';
 import PageNotFound from './screens/PageNotFound';
+import Report from './screens/Report';
 
 function App() {
   return (
@@ -11,8 +12,8 @@ function App() {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/question/:quizId/:questionId" component={Question} />
+            <Route path="/report/:quizId" component={Report} />
             <Route path="*" component={PageNotFound} />
-            {/* <Route path="/report/:quizId" component={Report} /> */}
           </Switch>
         </Router>
       </div>

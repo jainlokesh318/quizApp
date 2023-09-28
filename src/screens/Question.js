@@ -8,9 +8,11 @@ import confetti from "../images/confetti.svg"
 
 
 function Question() {
-    const [selectedAnswers, setSelectedAnswers] = useState([]); // State to track selected options
+    // State to track selected options
     const history = useHistory();
     const { quizId, questionId } = useParams()
+    const [selectedAnswers, setSelectedAnswers] = useState([]);
+    const [buttonText, setButtonText] = useState("Next");
     const [question, setQuestion] = useState({
         description: "",
         options: []
@@ -18,7 +20,9 @@ function Question() {
 
     const submitQuestion = async () => {
         try {
-            let res = await axios.post(`${backendUrl}/quiz/start`);
+            let res = await axios.post(`${backendUrl}/${quizId}/${questionId}`, {
+                givenAnswer: selectedAnswers
+            });
         }
         catch {
             history.push("/error")
@@ -28,8 +32,7 @@ function Question() {
     const getNextQuestion = async () => {
         try {
             let res = await axios.get(`${backendUrl}/quiz/${quizId}/nextQuestion`);
-            let questionId = res.data.question.questionId || ""
-            history.replace(`/question/${quizId}/${questionId}`)
+            return res;
         }
         catch {
             history.push("/error")
@@ -37,8 +40,23 @@ function Question() {
     }
 
     const handleNextClick = async () => {
-        //await submitQuestion();
-        await getNextQuestion();
+        await submitQuestion();
+        let res = await getNextQuestion();
+        let nextQuestionId = res.data.question.questionId || ""
+        let totalQuestions = res.data.totalQuestions - 1
+
+
+        if (nextQuestionId == totalQuestions) {
+            setButtonText("Submit")
+        }
+
+        if (nextQuestionId <= totalQuestions) {
+            history.replace(`/question/${quizId}/${nextQuestionId}`)
+        }
+        else {
+            history.replace(`/report/${quizId}`)
+        }
+
     }
 
     const fetchCurrentQuestionDetails = async () => {
@@ -62,6 +80,7 @@ function Question() {
 
     useEffect(() => {
         fetchCurrentQuestionDetails();
+        setSelectedAnswers([])
     }, [questionId])
 
     return (
@@ -69,10 +88,10 @@ function Question() {
             <img src={confetti} />
             <div className='h-4/5 w-full bg-white flex flex-col justify-end rounded-t-2xl p-5 gap-5'>
                 <div className='overflow-scroll flex flex-col gap-5'>
-                    <h2 className='font-bold text-xl'>{question?.description}</h2>
-                    <MultiSelectRadioOptions options={question?.options} onChange={handleAnswerSelection} />
+                    <h2 className='font-bold text-xl'>{question?.description || ""}</h2>
+                    <MultiSelectRadioOptions options={question?.options || []} onChange={handleAnswerSelection} />
                 </div>
-                <Button buttonText={"Next"} disabled={selectedAnswers.length === 0} onClick={handleNextClick} />
+                <Button buttonText={buttonText} disabled={selectedAnswers.length === 0} onClick={handleNextClick} />
             </div>
         </div>
     );

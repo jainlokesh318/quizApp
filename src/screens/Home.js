@@ -13,7 +13,7 @@ function Home() {
 
             let quizId = res.data.quizId || ""
             let questionId = res.data.question.questionId || ""
-
+            console.log("lokiii", res)
             history.push(`/question/${quizId}/${questionId}`)
         }
         catch {
